@@ -27,7 +27,7 @@ before_script:
 script:
   - npm test -- -i --coverage
 after_success:
-  - npm run corp-release -- -v -d
+  - npm run corp-release -- --verbose
 env:
   global:
   - CXX=g++-4.8
