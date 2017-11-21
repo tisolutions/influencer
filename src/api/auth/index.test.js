@@ -10,7 +10,7 @@ const app = () => express(apiRoot, routes)
 let user
 
 beforeEach(async () => {
-  user = await User.create({ email: 'a@a.com', password: '123456' })
+  user = await User.create({ email: 'a@a.com', lastName: 'user', password: '123456' })
 })
 
 test('POST /auth 201 (master)', async () => {

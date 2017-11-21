@@ -9,9 +9,9 @@ const app = () => express(apiRoot, routes)
 let user1, user2, admin, session1, session2, adminSession
 
 beforeEach(async () => {
-  user1 = await User.create({ name: 'user', email: 'a@a.com', password: '123456' })
-  user2 = await User.create({ name: 'user', email: 'b@b.com', password: '123456' })
-  admin = await User.create({ email: 'c@c.com', password: '123456', role: 'admin' })
+  user1 = await User.create({ name: 'user', lastName: 'user', email: 'a@a.com', password: '123456' })
+  user2 = await User.create({ name: 'user', lastName: 'user', email: 'b@b.com', password: '123456' })
+  admin = await User.create({ name: 'admin', lastName: 'admin', email: 'c@c.com', password: '123456', role: 'admin' })
   session1 = signSync(user1.id)
   session2 = signSync(user2.id)
   adminSession = signSync(admin.id)
@@ -97,7 +97,7 @@ test('GET /users/:id 404', async () => {
 test('POST /users 201 (master)', async () => {
   const { status, body } = await request(app())
     .post(apiRoot)
-    .send({ access_token: masterKey, email: 'd@d.com', password: '123456' })
+    .send({ access_token: masterKey, name: 'user', lastName: 'user', email: 'd@d.com', password: '123456' })
   expect(status).toBe(201)
   expect(typeof body).toBe('object')
   expect(body.email).toBe('d@d.com')
@@ -106,7 +106,7 @@ test('POST /users 201 (master)', async () => {
 test('POST /users 201 (master)', async () => {
   const { status, body } = await request(app())
     .post(apiRoot)
-    .send({ access_token: masterKey, email: 'd@d.com', password: '123456', role: 'user' })
+    .send({ access_token: masterKey, name: 'user', lastName: 'user', email: 'd@d.com', password: '123456', role: 'user' })
   expect(status).toBe(201)
   expect(typeof body).toBe('object')
   expect(body.email).toBe('d@d.com')
@@ -115,7 +115,7 @@ test('POST /users 201 (master)', async () => {
 test('POST /users 201 (master)', async () => {
   const { status, body } = await request(app())
     .post(apiRoot)
-    .send({ access_token: masterKey, email: 'd@d.com', password: '123456', role: 'admin' })
+    .send({ access_token: masterKey, name: 'user', lastName: 'user', email: 'd@d.com', password: '123456', role: 'admin' })
   expect(status).toBe(201)
   expect(typeof body).toBe('object')
   expect(body.email).toBe('d@d.com')
@@ -124,7 +124,7 @@ test('POST /users 201 (master)', async () => {
 test('POST /users 409 (master) - duplicated email', async () => {
   const { status, body } = await request(app())
     .post(apiRoot)
-    .send({ access_token: masterKey, email: 'a@a.com', password: '123456' })
+    .send({ access_token: masterKey, name: 'user', lastName: 'user', email: 'a@a.com', password: '123456' })
   expect(status).toBe(409)
   expect(typeof body).toBe('object')
   expect(body.param).toBe('email')
@@ -133,16 +133,34 @@ test('POST /users 409 (master) - duplicated email', async () => {
 test('POST /users 400 (master) - invalid email', async () => {
   const { status, body } = await request(app())
     .post(apiRoot)
-    .send({ access_token: masterKey, email: 'invalid', password: '123456' })
+    .send({ access_token: masterKey, name: 'user', lastName: 'user', email: 'invalid', password: '123456' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
   expect(body.param).toBe('email')
 })
 
+test('POST /users 400 (master) - missing name', async () => {
+  const { status, body } = await request(app())
+    .post(apiRoot)
+    .send({ access_token: masterKey, lastName: 'user', email: 'd@d.com', password: '123456' })
+  expect(status).toBe(400)
+  expect(typeof body).toBe('object')
+  expect(body.param).toBe('name')
+})
+
+test('POST /users 400 (master) - missing last name', async () => {
+  const { status, body } = await request(app())
+    .post(apiRoot)
+    .send({ access_token: masterKey, name: 'user', email: 'd@d.com', password: '123456' })
+  expect(status).toBe(400)
+  expect(typeof body).toBe('object')
+  expect(body.param).toBe('lastName')
+})
+
 test('POST /users 400 (master) - missing email', async () => {
   const { status, body } = await request(app())
     .post(apiRoot)
-    .send({ access_token: masterKey, password: '123456' })
+    .send({ access_token: masterKey, name: 'user', lastName: 'user', password: '123456' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
   expect(body.param).toBe('email')
@@ -151,7 +169,7 @@ test('POST /users 400 (master) - missing email', async () => {
 test('POST /users 400 (master) - invalid password', async () => {
   const { status, body } = await request(app())
     .post(apiRoot)
-    .send({ access_token: masterKey, email: 'd@d.com', password: '123' })
+    .send({ access_token: masterKey, name: 'user', lastName: 'user', email: 'd@d.com', password: '123' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
   expect(body.param).toBe('password')
@@ -160,7 +178,7 @@ test('POST /users 400 (master) - invalid password', async () => {
 test('POST /users 400 (master) - missing password', async () => {
   const { status, body } = await request(app())
     .post(apiRoot)
-    .send({ access_token: masterKey, email: 'd@d.com' })
+    .send({ access_token: masterKey, name: 'user', lastName: 'user', email: 'd@d.com' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
   expect(body.param).toBe('password')
@@ -169,7 +187,7 @@ test('POST /users 400 (master) - missing password', async () => {
 test('POST /users 400 (master) - invalid role', async () => {
   const { status, body } = await request(app())
     .post(apiRoot)
-    .send({ access_token: masterKey, email: 'd@d.com', password: '123456', role: 'invalid' })
+    .send({ access_token: masterKey, name: 'user', lastName: 'user', email: 'd@d.com', password: '123456', role: 'invalid' })
   expect(status).toBe(400)
   expect(typeof body).toBe('object')
   expect(body.param).toBe('role')
@@ -178,28 +196,28 @@ test('POST /users 400 (master) - invalid role', async () => {
 test('POST /users 401 (admin)', async () => {
   const { status } = await request(app())
     .post(apiRoot)
-    .send({ access_token: adminSession, email: 'd@d.com', password: '123456' })
+    .send({ access_token: adminSession, name: 'user', lastName: 'user', email: 'd@d.com', password: '123456' })
   expect(status).toBe(401)
 })
 
 test('POST /users 401 (user)', async () => {
   const { status } = await request(app())
     .post(apiRoot)
-    .send({ access_token: session1, email: 'd@d.com', password: '123456' })
+    .send({ access_token: session1, name: 'user', lastName: 'user', email: 'd@d.com', password: '123456' })
   expect(status).toBe(401)
 })
 
 test('POST /users 401', async () => {
   const { status } = await request(app())
     .post(apiRoot)
-    .send({ email: 'd@d.com', password: '123456' })
+    .send({ name: 'user', lastName: 'user', email: 'd@d.com', password: '123456' })
   expect(status).toBe(401)
 })
 
 test('PUT /users/me 200 (user)', async () => {
   const { status, body } = await request(app())
     .put(apiRoot + '/me')
-    .send({ access_token: session1, name: 'test' })
+    .send({ access_token: session1, name: 'test', lastName: 'user' })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.name).toBe('test')
@@ -208,7 +226,7 @@ test('PUT /users/me 200 (user)', async () => {
 test('PUT /users/me 200 (user)', async () => {
   const { status, body } = await request(app())
     .put(apiRoot + '/me')
-    .send({ access_token: session1, email: 'test@test.com' })
+    .send({ access_token: session1, name: 'user', lastName: 'user', email: 'test@test.com' })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.email).toBe('a@a.com')
@@ -224,7 +242,7 @@ test('PUT /users/me 401', async () => {
 test('PUT /users/:id 200 (user)', async () => {
   const { status, body } = await request(app())
     .put(`${apiRoot}/${user1.id}`)
-    .send({ access_token: session1, name: 'test' })
+    .send({ access_token: session1, name: 'test', lastName: 'user' })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.name).toBe('test')
@@ -233,7 +251,7 @@ test('PUT /users/:id 200 (user)', async () => {
 test('PUT /users/:id 200 (user)', async () => {
   const { status, body } = await request(app())
     .put(`${apiRoot}/${user1.id}`)
-    .send({ access_token: session1, email: 'test@test.com' })
+    .send({ access_token: session1, name: 'user', lastName: 'user', email: 'test@test.com' })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.email).toBe('a@a.com')
@@ -242,7 +260,7 @@ test('PUT /users/:id 200 (user)', async () => {
 test('PUT /users/:id 200 (admin)', async () => {
   const { status, body } = await request(app())
     .put(`${apiRoot}/${user1.id}`)
-    .send({ access_token: adminSession, name: 'test' })
+    .send({ access_token: adminSession, name: 'test', lastName: 'user' })
   expect(status).toBe(200)
   expect(typeof body).toBe('object')
   expect(body.name).toBe('test')
@@ -251,7 +269,7 @@ test('PUT /users/:id 200 (admin)', async () => {
 test('PUT /users/:id 401 (user) - another user', async () => {
   const { status } = await request(app())
     .put(`${apiRoot}/${user1.id}`)
-    .send({ access_token: session2, name: 'test' })
+    .send({ access_token: session2, name: 'test', lastName: 'user' })
   expect(status).toBe(401)
 })
 
@@ -265,7 +283,7 @@ test('PUT /users/:id 401', async () => {
 test('PUT /users/:id 404 (admin)', async () => {
   const { status } = await request(app())
     .put(apiRoot + '/123456789098765432123456')
-    .send({ access_token: adminSession, name: 'test' })
+    .send({ access_token: adminSession, name: 'test', lastName: 'user' })
   expect(status).toBe(404)
 })
 

@@ -11,7 +11,7 @@ let user, passwordReset
 
 beforeEach(async () => {
   nock('https://api.sendgrid.com').post('/v3/mail/send').reply(202)
-  user = await User.create({ email: 'a@a.com', password: '123456' })
+  user = await User.create({ email: 'a@a.com', lastName: 'user', password: '123456' })
   passwordReset = await PasswordReset.create({ user })
 })
 
@@ -86,7 +86,7 @@ test('PUT /password-resets/:token 200', async () => {
   const { status, body } = await request(app())
     .put(`${apiRoot}/${passwordReset.token}`)
     .send({ password: '654321' })
-  const [ updatedUser, passwordResets ] = await Promise.all([
+  const [updatedUser, passwordResets] = await Promise.all([
     User.findById(passwordReset.user.id),
     PasswordReset.find({})
   ])
