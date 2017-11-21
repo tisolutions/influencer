@@ -1,6 +1,6 @@
 {
   "name": "tatiana-arias",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "main": "src",
   "private": true,
   "scripts": {
@@ -15,7 +15,7 @@
     "lint": "eslint src",
     "docs": "apidoc -i src -o docs && apidoc-markdown -p docs -o DOCS.md",
     "postdocs": "opn docs/index.html",
-    "corp-release": "corp-semantic-release --pre-commit npm run docs"
+    "corp-release": "corp-semantic-release --pre-commit docs"
   },
   "jest": {
     "testEnvironment": "node",
