@@ -5,6 +5,13 @@
 - [Auth](#auth)
 	- [Authenticate](#authenticate)
 	
+- [Benefit](#benefit)
+	- [Create benefit](#create-benefit)
+	- [Delete benefit](#delete-benefit)
+	- [Retrieve benefit](#retrieve-benefit)
+	- [Retrieve benefits](#retrieve-benefits)
+	- [Update benefit](#update-benefit)
+	
 - [PasswordReset](#passwordreset)
 	- [Send email](#send-email)
 	- [Submit password](#submit-password)
@@ -40,6 +47,75 @@
 | Name    | Type      | Description                          |
 |---------|-----------|--------------------------------------|
 | access_token			| String			|  <p>Master access_token.</p>							|
+
+# Benefit
+
+## Create benefit
+
+
+
+	POST /benefits
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| access_token			| String			|  <p>master access token.</p>							|
+| description			| 			|  <p>Benefit's description.</p>							|
+| title			| 			|  <p>Benefit's title.</p>							|
+
+## Delete benefit
+
+
+
+	DELETE /benefits/:id
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| access_token			| String			|  <p>master access token.</p>							|
+
+## Retrieve benefit
+
+
+
+	GET /benefits/:id
+
+
+## Retrieve benefits
+
+
+
+	GET /benefits
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| q			| String			| **optional** <p>Query to search.</p>							|
+| page			| Number			| **optional** <p>Page number.</p>							|
+| limit			| Number			| **optional** <p>Amount of returned items.</p>							|
+| sort			| String[]			| **optional** <p>Order of returned items.</p>							|
+| fields			| String[]			| **optional** <p>Fields to be returned.</p>							|
+
+## Update benefit
+
+
+
+	PUT /benefits/:id
+
+
+### Parameters
+
+| Name    | Type      | Description                          |
+|---------|-----------|--------------------------------------|
+| access_token			| String			|  <p>master access token.</p>							|
+| description			| 			|  <p>Benefit's description.</p>							|
+| title			| 			|  <p>Benefit's title.</p>							|
 
 # PasswordReset
 
@@ -94,6 +170,7 @@
 | email			| String			|  <p>User's email.</p>							|
 | password			| String			|  <p>User's password.</p>							|
 | name			| String			| **optional** <p>User's name.</p>							|
+| lastName			| String			| **optional** <p>User's last name.</p>							|
 | picture			| String			| **optional** <p>User's picture.</p>							|
 | role			| String			| **optional** <p>User's picture.</p>							|
 
@@ -179,6 +256,7 @@
 |---------|-----------|--------------------------------------|
 | access_token			| String			|  <p>User access_token.</p>							|
 | name			| String			| **optional** <p>User's name.</p>							|
+| lastName			| String			| **optional** <p>User's last name.</p>							|
 | picture			| String			| **optional** <p>User's picture.</p>							|
 
 
