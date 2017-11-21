@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  web:
+    command: npm run prod
+    build: .
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - "8080:8080"
+    links:
+      - mongo
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/tatiana-arias
+    restart: always
+  mongo:
+    image: mongo
+    ports:
+      - '27017:27017'
+    restart: always
