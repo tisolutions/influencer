@@ -23,6 +23,13 @@ const userSchema = new Schema({
   name: {
     type: String,
     index: true,
+    required: true,
+    trim: true
+  },
+  lastName: {
+    type: String,
+    index: true,
+    required: true,
     trim: true
   },
   role: {
@@ -33,10 +40,15 @@ const userSchema = new Schema({
   picture: {
     type: String,
     trim: true
+  },
+  videoQuality: String,
+  notification: {
+    start: Date,
+    end: Date,
+    frequency: Number,
+    sound: String
   }
-}, {
-  timestamps: true
-})
+}, { timestamps: true })
 
 userSchema.path('email').set(function (email) {
   if (!this.picture || this.picture.indexOf('https://gravatar.com') === 0) {
@@ -66,7 +78,7 @@ userSchema.pre('save', function (next) {
 userSchema.methods = {
   view (full) {
     let view = {}
-    let fields = ['id', 'name', 'picture']
+    let fields = ['id', 'name', 'lastName', 'picture']
 
     if (full) {
       fields = [...fields, 'email', 'createdAt']
